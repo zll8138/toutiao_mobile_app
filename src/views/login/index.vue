@@ -8,12 +8,13 @@
     />
 
     <!-- 登录表单 -->
-    <van-cell-group>
+    <van-form @submit="onLogin">
       <van-field
         v-model="user.mobile"
         icon-prefix="toutiao"
         left-icon="shouji"
         placeholder="请输入手机号"
+        :rules="[{ required: true, message: '请填写用户名' }]"
       />
       <van-field
         v-model="user.code"
@@ -30,13 +31,12 @@
           >发送验证码</van-button>
         </template>
       </van-field>
-    </van-cell-group>
+    </van-form>
     <div class="login-btn-wrap">
       <van-button
         class="login-btn"
         type="info"
         block
-        @click="onLogin"
       >登录</van-button>
     </div>
     <!-- /登录表单 -->
