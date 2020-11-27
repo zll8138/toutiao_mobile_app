@@ -8,11 +8,18 @@
     />
 
     <!-- 登录表单 -->
-    <van-form @submit="onLogin">
+    <van-form
+      :show-error="false"
+      :show-error-message="false"
+      validate-first
+      @submit="onLogin"
+      @failed="onFailed"
+    >
       <van-field
         v-model="user.mobile"
         icon-prefix="toutiao"
         left-icon="shouji"
+        name="手机号"
         placeholder="请输入手机号"
         :rules="formRules.mobile"
       />
@@ -20,6 +27,7 @@
         v-model="user.code"
         clearable
         icon-prefix="toutiao"
+        name="验证码"
         left-icon="yanzhengma"
         placeholder="请输入验证码"
         :rules="formRules.code"
@@ -32,14 +40,14 @@
           >发送验证码</van-button>
         </template>
       </van-field>
-    </van-form>
-    <div class="login-btn-wrap">
+      <div class="login-btn-wrap">
       <van-button
         class="login-btn"
         type="info"
         block
       >登录</van-button>
     </div>
+    </van-form>
     <!-- /登录表单 -->
   </div>
 </template>
@@ -73,6 +81,15 @@ export default {
   created () {},
   mounted () {},
   methods: {
+    onFailed (error) {
+      alert('ok')
+      if (error.errors[0]) {
+        this.$toast({
+          message: error.errors[0].message, // 提示消息
+          position: 'top' // 防止手机键盘太高看不见提示消息
+        })
+      }
+    },
     async onLogin () {
       // 1. 找到数据接口
       // 2. 封装请求方法
