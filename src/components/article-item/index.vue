@@ -12,7 +12,7 @@
           :key="index"
         >
           <van-image
-            class="cover-item"
+            class="cover-image"
             fit="cover"
             :src="img"
           />
@@ -81,7 +81,7 @@ export default {
       &:not(:last-child) {
         padding-right: 4px;
       }
-      .cover-item {
+      .cover-image {
         width: 100%;
         height: 73px;
       }
