@@ -9,29 +9,32 @@
     />
     <!-- /导航栏 -->
 
-    <h1 class="title">牛逼程序员都用的开源工具，你用了 几个？</h1>
+    <h1 class="title">{{ article.title }}</h1>
     <van-cell center class="user-info">
-      <div slot="title" class="name">天涯小型客</div>
+      <div slot="title" class="name">{{ article.aut_name }}</div>
       <van-image
         slot="icon"
         class="avatar"
         round
         fit="cover"
-        src="https://img.yzcdn.cn/vant/cat.jpeg"
+        :src="article.aut_photo"
       />
-      <div slot="label" class="pubdate">14小时前</div>
+      <div slot="label" class="pubdate">{{ article.pubdate | relativeTime }}</div>
       <van-button
         class="follow-btn"
-        type="info"
-        icon="plus"
+        :type="article.is_followed ? 'default' : 'info'"
+        :icon="article.is_followed ? '' : 'plus'"
         round
         size="small"
-      >关注</van-button>
+       >{{ article.is_followed ? '已关注' : '关注' }}</van-button>
     </van-cell>
+    <div class="markdown-body" v-html="article.content"></div>
   </div>
 </template>
 
 <script>
+import './github-markdown.css'
+import { getArticleById } from '@/api/article'
 // 在组件中获取动态路由参数：
 //    方式一：this.$route.params.articleId
 //    方式二：props 传参，推荐
@@ -41,18 +44,27 @@ export default {
   components: {},
   props: {
     articleId: {
-      type: String,
+      type: [String, Number, Object],
       required: true
     }
   },
   data () {
-    return {}
+    return {
+      article: {} // 文章数据对象
+    }
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    this.loadArticle()
+  },
   mounted () {},
-  methods: {}
+  methods: {
+    async loadArticle () {
+      const { data } = await getArticleById(this.articleId)
+      this.article = data.data
+    }
+  }
 }
 </script>
 
@@ -60,7 +72,7 @@ export default {
 .title {
   font-size: 20px;
   color: #3a3a3a;
-  padding: 14px;
+  padding: 24px 20px 18px;
   background-color: #fff;
   margin: 0;
 }
@@ -82,5 +94,12 @@ export default {
     width: 85px;
     height: 29px;
   }
+}
+ul {
+  list-style: unset;
+}
+.markdown-body {
+  padding: 14px;
+  background-color: #fff;
 }
 </style>
