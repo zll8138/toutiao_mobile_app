@@ -1,18 +1,19 @@
 <template>
   <van-cell class="article-item">
-    <div slot="title">{{ article.title }}</div>
+    <div slot="title" class="title van-multi-ellipsis--l3">{{ article.title }}</div>
     <div slot="label">
       <div
         v-if="article.cover.type === 3"
         class="cover-wrap"
       >
-        <div class="cover-wrap-item">
+        <div
+          class="cover-wrap-item"
+          v-for="(img, index) in article.cover.images"
+          :key="index"
+        >
           <van-image
-            width="116"
-            height="73"
+            class="cover-item"
             fit="cover"
-            v-for="(img, index) in article.cover.images"
-            :key="index"
             :src="img"
           />
         </div>
@@ -26,8 +27,7 @@
     <!-- 默认插槽的名字叫 default，可以省略 -->
     <van-image
       v-if="article.cover.type === 1"
-      width="116"
-      height="73"
+      class="right-cover"
       fit="cover"
       :src="article.cover.images[0]"
     />
@@ -55,4 +55,36 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.article-item {
+  .title {
+    font-size: 16px;
+    color: #3a3a3a;
+  }
+  /deep/ .van-cell__value {
+    flex: unset;
+    width: 116px;
+    height: 73px;
+    margin-left: 12px;
+  }
+  .right-cover {
+    width: 116px;
+    height: 73px;
+  }
+}
+.cover-wrap {
+    padding: 15px 0;
+    display: flex;
+    .cover-wrap-item {
+      flex: 1;
+      height: 73px;
+      &:not(:last-child) {
+        padding-right: 4px;
+      }
+      .cover-item {
+        width: 100%;
+        height: 73px;
+      }
+    }
+  }
+</style>
