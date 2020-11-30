@@ -28,13 +28,14 @@
         size="small"
        >{{ article.is_followed ? '已关注' : '关注' }}</van-button>
     </van-cell>
-    <div class="markdown-body" v-html="article.content"></div>
+    <div class="markdown-body" v-html="article.content" ref="article-content"></div>
   </div>
 </template>
 
 <script>
 import './github-markdown.css'
 import { getArticleById } from '@/api/article'
+import { ImagePreview } from 'vant'
 // 在组件中获取动态路由参数：
 //    方式一：this.$route.params.articleId
 //    方式二：props 传参，推荐
@@ -60,9 +61,34 @@ export default {
   },
   mounted () {},
   methods: {
+    previewImage () {
+      // 得到所有的 img 节点
+      const articleContent = this.$refs['article-content']
+      const imgs = articleContent.querySelectorAll('img')
+      // 获取所有 img 地址
+      const images = []
+      imgs.forEach((img, index) => {
+        images.push(img.src)
+        // 给每个 img 注册点击事件，在处理函数中调用预览
+        img.onclick = () => {
+          ImagePreview({
+            // 预览的图片地址数组
+            images,
+            // 起始位置，从 0 开始
+            startPosition: index
+          })
+        }
+      })
+    },
     async loadArticle () {
       const { data } = await getArticleById(this.articleId)
+      // 数据驱动视图这件事儿不是立即的
       this.article = data.data
+      // 初始化图片点击预览
+      // console.log(this.$refs['article-content'])
+      setTimeout(() => {
+        this.previewImage()
+      }, 0)
     }
   }
 }
