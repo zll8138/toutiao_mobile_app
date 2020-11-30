@@ -26,7 +26,9 @@
         :icon="article.is_followed ? '' : 'plus'"
         round
         size="small"
-       >{{ article.is_followed ? '已关注' : '关注' }}</van-button>
+        :loading="isFollowLoading"
+        @click="onFollow"
+      >{{ article.is_followed ? '已关注' : '关注' }}</van-button>
     </van-cell>
     <div class="markdown-body" v-html="article.content" ref="article-content"></div>
   </div>
@@ -36,6 +38,7 @@
 import './github-markdown.css'
 import { getArticleById } from '@/api/article'
 import { ImagePreview } from 'vant'
+import { addFollow, deleteFollow } from '@/api/user'
 // 在组件中获取动态路由参数：
 //    方式一：this.$route.params.articleId
 //    方式二：props 传参，推荐
@@ -51,7 +54,9 @@ export default {
   },
   data () {
     return {
-      article: {} // 文章数据对象
+      article: {},
+      errStatus: 0, // 失败的状态码
+      isFollowLoading: false // 文章数据对象
     }
   },
   computed: {},
@@ -61,6 +66,20 @@ export default {
   },
   mounted () {},
   methods: {
+    async onFollow () {
+      this.isFollowLoading = true
+      if (this.article.is_followed) {
+        // 已关注，取消关注
+        await deleteFollow(this.article.aut_id)
+        // this.article.is_followed = false
+      } else {
+        // 没有关注，添加关注
+        await addFollow(this.article.aut_id)
+        // this.article.is_followed = true
+      }
+      this.article.is_followed = !this.article.is_followed
+      this.isFollowLoading = false
+    },
     previewImage () {
       // 得到所有的 img 节点
       const articleContent = this.$refs['article-content']
