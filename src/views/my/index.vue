@@ -76,6 +76,7 @@
       v-if="user"
       class="logout-cell"
       title="退出登录"
+      @click="onLogout"
     />
   </div>
 </template>
@@ -95,7 +96,23 @@ export default {
   watch: {},
   created () {},
   mounted () {},
-  methods: {}
+  methods: {
+    onLogout () {
+      // 提示用户确认退出
+      // 确认 -> 处理退出
+      this.$dialog.confirm({
+        title: '退出提示',
+        message: '确认退出吗？'
+      })
+        .then(() => { // 确认执行这里
+          // 清除用户登录状态
+          this.$store.commit('setUser', null)
+        })
+        .catch(() => { // 退出执行这里
+          // on cancel
+        })
+    }
+  }
 }
 </script>
 
