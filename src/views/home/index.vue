@@ -60,6 +60,8 @@
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list'
 import ChannelEdit from './components/channel-edit'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'HomeIndex',
   components: {
@@ -71,10 +73,12 @@ export default {
     return {
       active: 1, // 控制被激活的标签
       channels: [], // 频道列表
-      isChannelEditShow: true
+      isChannelEditShow: false
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
   watch: {},
   created () {
     this.loadChannels()
@@ -82,9 +86,25 @@ export default {
   mounted () {},
   methods: {
     async loadChannels () {
-      // 请求获取频道数据
-      const { data } = await getUserChannels()
-      this.channels = data.data.channels
+      let channels = []
+      if (this.user) {
+        // 已登录，请求获取线上的用户频道列表数据
+        const { data } = await getUserChannels()
+        channels = data.data.channels
+      } else {
+        // 没有登录，判断是否有本地存储的频道列表数据
+        const localChannels = getItem('user-channels')
+        // 如果有本地存储的频道列表则使用
+        if (localChannels) {
+          channels = localChannels
+        } else {
+          // 用户没有登录，也没有本地存储的频道，那就请求获取默认推荐的频道列表
+          const { data } = await getUserChannels()
+          channels = data.data.channels
+        }
+      }
+      // 把处理好的数据放到 data 中以供模板使用
+      this.channels = channels
     }
   }
 }
