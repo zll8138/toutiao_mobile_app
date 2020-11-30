@@ -16,20 +16,30 @@
     <!-- /搜索栏 -->
 
     <!-- 联想建议 -->
+    <search-suggestion />
     <!-- /联想建议 -->
 
     <!-- 历史记录 -->
+    <search-history />
     <!-- /历史记录 -->
 
     <!-- 搜索结果 -->
+    <search-result />
     <!-- /搜索结果 -->
   </div>
 </template>
 
 <script>
+import SearchSuggestion from './components/search-suggestion'
+import SearchHistory from './components/search-history'
+import SearchResult from './components/search-result'
 export default {
   name: 'SearchIndex',
-  components: {},
+  components: {
+    SearchSuggestion,
+    SearchHistory,
+    SearchResult
+  },
   props: {},
   data () {
     return {
