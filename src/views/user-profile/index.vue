@@ -21,6 +21,7 @@
       title="昵称"
       is-link
       :value="user.name"
+      @click="isEditNameShow = true"
     />
     <van-cell
       title="性别"
@@ -32,18 +33,34 @@
       is-link
       :value="user.birthday"
     />
+
+    <van-popup
+      v-model="isEditNameShow"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <update-name
+        @close="isEditNameShow = false"
+        :name="user.name"
+        @update-name="user.name = $event"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { getUserProfile } from '@/api/user'
+import UpdateName from './components/update-name'
 export default {
   name: 'UserProfile',
-  components: {},
+  components: {
+    UpdateName
+  },
   props: {},
   data () {
     return {
-      user: {} // 用户数据
+      user: {}, // 用户数据
+      isEditNameShow: false // 编辑昵称的显示状态
     }
   },
   computed: {},
@@ -61,4 +78,8 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.van-popup {
+  background-color: #f5f7f9;
+}
+</style>
