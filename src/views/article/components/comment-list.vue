@@ -10,6 +10,7 @@
         v-for="(comment, index) in list"
         :key="index"
         :comment="comment"
+        @reply-click="$emit('reply-click', $event)"
       />
     </van-list>
   </div>
@@ -59,6 +60,7 @@ export default {
         offset: this.offset, // 获取评论数据的偏移量，值为评论id，表示从此id的数据向后取，不传表示从第一页开始读取数据
         limit: this.limit // 每页大小
       })
+      this.$emit('update-total-count', data.data.total_count)
       // 2. 把数据放到列表中
       const { results } = data.data
       this.list.push(...results)
